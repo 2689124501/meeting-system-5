@@ -120,8 +120,13 @@ public class AccountController {
     @GetMapping("/getForumMessage")
     public ResponseMessage getForumMessage(HttpServletRequest request){
         HttpSession session = request.getSession();
-        String name = session.getAttribute("userName").toString();
-        if (name!=null){
+        String name;
+
+        if(session.getAttribute("userName")==null){
+            return  ResponseMessage.failure("请先登录");
+        }
+        else{
+            name = session.getAttribute("userName").toString();
             //获得account 然后获取所参与的分论坛
             List<AccountForum> accountForums = accountService.getAccountForums(name);
             //遍历列表 获取通知，添加到通知列表中
@@ -132,6 +137,5 @@ public class AccountController {
             }
             return ResponseMessage.success(notices);
         }
-        return  ResponseMessage.failure("请先登录");
     }
 }
